@@ -1,8 +1,10 @@
 venv/
 .python-version/
+.python-version
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
+gym_gridworld/__pycache__/
 *.py[codz]
 *$py.class
 
