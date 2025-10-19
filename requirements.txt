@@ -1,6 +1,9 @@
 # Si existen problemas con la instalación de dependencias
 # hacer intalación en python 3.9.23, es recomendable instalar
 # versión con pyenv
+matplotlib
+seaborn
+pandas
 gym==0.21.0
 numpy==2.0.2
 pyglet==1.5.27

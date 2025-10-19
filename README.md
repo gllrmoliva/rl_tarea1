@@ -1,19 +1,37 @@
-# GridWorldEnvs
-## Some GridWorld environments for OpenAI Gym
+## GridWorld Tarea 1
+Este proyecto es una modificación de Gridworld (gym) para responder a la tarea
+de la asignatura Aprendizaje por Refuerzo. Está cuenta con la implementación de
+los métodos: Q-Learning, Double Q-Learning, SARSA, Lambda Q-Learning y Lambda SARSA
 
-### Problem
-GridWorld is a simple and famous benchmark problem in Reinforcement Learning. The environment presents a rectangular grid in which an agent, starting from a certain cell, has to reach another cell defined as a goal, observing only its actual position. The agent receives a certain reward when it reachs the goal while moving in the environment. There are a lot of variations to this problem, like having multiple goal cells, walls (cells that the agent cannot pass by), bombs (cells that give a big negative reward if stepped) or uncertainty in the actions' outcome.
+Repositorio original: https://github.com/opocaj92/GridWorldEnvs
 
-Also multi-agent versions have been proposed, like the Pursers-Evaders problem, in which a set of pursuers (our agents) have to reach coordinately the location of the evaders in order to catch them, while also them are moving in the environment (in out environment they move at random, but they could also learn how to evade). The problem ends when all the evaders have been catched.
+## Requisitos instalación
+1. Tener instalada la versión 3.9.23 de python, esto se puede hacer mediante pyenv.
+2. Instalar dependencias mediante `pip install -r requirements.txt`.
 
-### Overview
-This little environment for OpenAI Gym allows to learn these problems. The files ***gym_gridworld/envs/GridWorld.py*** and ***gym_gridworld/envs/PursuersEvaders.py*** represent the two different problems respectively. They can simply be used as any other OpenAI Gym environment with `env = gym.make("GridWorld-v0")` and `env = gym.make("PursuersEvaders-v0")`. Custom maps can be made using text file similar to the provided examples (files named ***map#.txt*** are for the GridWorld environment, while files named ***mmap#.txt*** are for the PursuersEvaders one).
+## Uso
+El archivo principal es `tarea1.py`, su uso está dado por:
 
-The two files ***q_learning.py*** and ***multiagent_q_learning.py*** are two example solvers for these two environments using the Q-Learning algorithm.
+``python tarea.py [args]``
 
-### Author
-*Castellini Jacopo*
+los argumentos disponibles son:
+- `--method`: método que se usara, puede tomar el valor de: 0(qlearning), 1(sarsa), 2(d-qlearning), 3(qlearning lambda), 4(sarsa lambda). Su valor por defecto es 0.
+- `--exp_name`: nombre que tendran los archivos de cierto experimento. su valor por defecto es 'default'.
+- `--plot_title`: nombre de método que se mostrara en el gráfico generado.
+- `--render`: si es 0 no se mostrara visualización interactiva, si es 1 si se mostrará. se valor por defecto es 0
+- `--map`: para en el que se haran los experimentos, puede ser: 'map1' o 'map2'. Valor por defecto es map1
+- `--fail_rate`: Porcentaje de fallos que puede tener una acción. si falla tiene 50% de probabilidades de moverse a la izquieda y 50% a la derecha. Valor por defecto: 0
+- `--episodes`: cantidad de episodios de entrenamiento. Valor por defecto: 10,000
+- `--max_steps`: cantidad de pasos máximos por episodio, valor por defecto: 100
+- `--lr`: learning rate, valor por defecto: 0.2
+- `--gamma`: valor gamma, valor por defecto: 0.90
+- `--lambda`: valor lambda, valor por defecto: 0
+- `--epsilon`: epsilon inicial, valor por defecto: 1
+- `--debug_step`: cantidad de pasos en las que se mostrara resultados de un episodio, valor por defecto: 100
 
-## Para instalar ejecutar correctamente se debe:
-1. Tener instalada la versión 3.9.23 de python, esto se puede hacer con pyenv
-2. Instalar dependencias mediante `pip install -r requirements.txt`
+En caso de querer ejecutar experimentos predeterminados, ejecutar:
+
+``
+chmod +x run_experiments.sh
+./run_experiments.sh
+``

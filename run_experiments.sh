@@ -1,0 +1,2 @@
+python tarea1.py --method 0 --exp_name 'p1_qlearning_map1_default' --plot_title 'Q-learning, mapa 1' --render 0 --map map1 --fail_rate 0.0 --episodes 10000 --max_steps 100 --lr 0.20 --gamma 0.90 --lambda 0.0 --epsilon 1.0 --debug_step 100
+python tarea1.py --method 1 --exp_name 'p1_sarsa_map1_default' --plot_title 'SARSA, mapa 1' --render 0 --map map1 --fail_rate 0.0 --episodes 10000 --max_steps 100 --lr 0.20 --gamma 0.90 --lambda 0.0 --epsilon 1.0 --debug_step 100

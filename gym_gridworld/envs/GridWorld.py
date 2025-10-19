@@ -13,8 +13,9 @@ LEFT = 3
 
 class GridWorld(gym.Env):
     metadata = {'render.modes': ['human']}
-
-    def __init__(self, file_name = "map1.txt", fail_rate = 0.0, terminal_reward = 2.0, move_reward = 0.0, bump_reward = -0.5, bomb_reward = -1.5):
+    
+    # Aquí se modífico el fail rate a 0.30, de normal es 0
+    def __init__(self, file_name = "map2.txt", fail_rate = 0.0, terminal_reward = 2.0, move_reward = 0.0, bump_reward = -0.5, bomb_reward = -1.5):
         self.viewer = SimpleImageViewer()
         self.n = None
         self.m = None
@@ -58,8 +59,25 @@ class GridWorld(gym.Env):
         
     def step(self, action):
         assert self.action_space.contains(action)
-        if self.state in self.goals or np.random.rand() < self.fail_rate:
+        # ESTE CODIGO ES NUEVO
+        if self.state in self.goals:
             return self.state, 0.0, self.done, None
+
+        # Cuando falla, esto debería ser el 30% de las veces
+        elif np.random.rand() < self.fail_rate:
+            if np.random.rand() < 0.5:  # Ir a la izquierda
+                new_action = (action + 3) % 4
+            else:                       # Ir a la derecha
+                new_action = (action + 1) % 4
+
+            new_state = self.take_action(new_action)
+            reward = self.get_reward(new_state)
+            self.state = new_state
+
+            return self.state, reward, self.done, None
+            # HASTA AQUI
+            #return self.state, 0.0, self.done, None
+        # Cuando no falla
         else:
             new_state = self.take_action(action)
             reward = self.get_reward(new_state)
