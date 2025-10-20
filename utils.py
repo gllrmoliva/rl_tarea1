@@ -164,7 +164,7 @@ def parse_args():
         '--gamma', type=float, default=0.90
     )
     parser.add_argument(
-        '--lambda', type=float, default=0.0, dest='lambda_' # palabra asignada O.O
+        '--lambda', type=float, default=0.5, dest='lambda_' # palabra asignada O.O
     )
     parser.add_argument(
         '--epsilon', type=float, default=1.0

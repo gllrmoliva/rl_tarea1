@@ -182,8 +182,140 @@ def sarsa(env, PARAMS):
         if epsilon > 0.1: epsilon -= 0.0001
 
     return Q, rewards, epsilons, dones
+
+
+def qlearning_lambda(env, PARAMS):
+
+    STATES = env.n_states
+    ACTIONS = env.n_actions
+    epsilon = PARAMS["EPSILON"]
+
+    Q = np.zeros((STATES, ACTIONS))
+    rewards = []
+    epsilons = []
+    dones = []
+
+    for episode in range(PARAMS["EPISODES"]):
+
+        state = env.reset()
+        
+        # aquí se guardan los traces
+        e = np.zeros((STATES, ACTIONS))
+        rewards_epi = 0
+
+        for step in range(PARAMS["MAX_STEPS"]):
+
+            if np.random.rand() < epsilon:
+                action = env.action_space.sample()
+            else:
+                action = np.argmax(Q[state, :])
+
+            next_state, reward, done, _ = env.step(action)
+            rewards_epi += reward
+
+            # definición de delta
+            delta = reward + PARAMS["GAMMA"] * np.max(Q[next_state, :]) - Q[state, action]
+
+            # incrementar trace
+            e[state, action] += 1
+
+            # actualizar Q 
+            Q += PARAMS["LEARNING_RATE"] * delta * e
+
+            # decaer todos los traces por gamma y lambda
+            e *= PARAMS["GAMMA"] * PARAMS["LAMBDA"]
+
+            state = next_state
+
+            if done:
+                dones.append(1)
+                break
+            if step == PARAMS["MAX_STEPS"] - 1:
+                dones.append(0)
+
+        rewards.append(rewards_epi)
+        epsilons.append(epsilon)
+
+        if episode % PARAMS["DEBUG_STEP"] == 0:
+            print(f"Episode {episode} rewards: {rewards_epi}, epsilon: {epsilon}")
+        
+        if epsilon > 0.1:
+            epsilon -= 0.0001
+
+    return Q, rewards, epsilons, dones
+
+
+def sarsa_lambda(env, PARAMS):
+
+    STATES = env.n_states
+    ACTIONS = env.n_actions
+    epsilon = PARAMS["EPSILON"]
+
+    Q = np.zeros((STATES, ACTIONS))
+
+    rewards = []
+    epsilons = []
+    dones = []
+
+    for episode in range(PARAMS["EPISODES"]):
+
+        state = env.reset()
+
+        if np.random.rand() < epsilon:
+            action = env.action_space.sample()
+        else:
+            action = np.argmax(Q[state, :])
+
+        # Aquí se van a guardar los traces
+        e = np.zeros((STATES, ACTIONS))
+
+        rewards_epi = 0
+
+        for step in range(PARAMS["MAX_STEPS"]):
+            next_state, reward, done, _ = env.step(action)
+            rewards_epi += reward
+
+            if np.random.rand() < epsilon:
+                next_action = env.action_space.sample()
+            else:
+                next_action = np.argmax(Q[next_state, :])
+
+            # definición de delta
+            delta = reward + PARAMS["GAMMA"] * Q[next_state, next_action] - Q[state, action]
+
+            # incrementar trace
+            e[state, action] += 1
+
+            # actualizamos q values a partir de traces
+            Q += PARAMS["LEARNING_RATE"] * delta * e 
+
+            # decaer traces con respecto a gamma y lambda
+            e *= PARAMS["GAMMA"] * PARAMS["LAMBDA"]
+
+            state = next_state
+            action = next_action
+
+            if done:
+                dones.append(1)
+                break
+            if step == PARAMS["MAX_STEPS"] - 1:
+                dones.append(0)
+
+        rewards.append(rewards_epi)
+        epsilons.append(epsilon)
+
+        if episode % PARAMS["DEBUG_STEP"] == 0:
+            print(f"Episode {episode} rewards: {rewards_epi}, epsilon: {epsilon}")
+        
+        if epsilon > 0.1:
+            epsilon -= 0.0001
+
+    return Q, rewards, epsilons, dones
+
+
+
 # Función que simula un episodio y devuelve los estados en los que estuvo
-def playgame(env, Q, max_steps = 50):
+def playgame(env, Q, max_steps = 100):
 
     env.reset()
     observation = env.reset()
@@ -259,7 +391,6 @@ if __name__ == "__main__":
         Q, rewards, epsilons, dones = qlearning(env = env,
                                                 PARAMS = PARAMS
                                                 )
-
     elif (PARAMS["METHOD"] == 1):
         Q, rewards, epsilons, dones = sarsa(env = env,
                                             PARAMS = PARAMS
@@ -269,6 +400,14 @@ if __name__ == "__main__":
                                                              PARAMS = PARAMS
                                                              )
         Q = (Q_1 + Q_2) / 2
+    elif (PARAMS["METHOD"] == 3):
+        Q, rewards, epsilons, dones = qlearning_lambda(env = env,
+                                                       PARAMS = PARAMS
+                                                       )
+    elif (PARAMS["METHOD"] == 4):
+        Q, rewards, epsilons, dones = sarsa_lambda(env = env,
+                                                   PARAMS = PARAMS
+                                                   )
     else:
         print("Ingrese un método válido")
         exit()
